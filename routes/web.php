@@ -18,6 +18,9 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::get('/user/dashboard', [PostController::class, 'userDashboardHome'])->name('user.dashboard');
     Route::post('/user/storepost', [PostController::class, 'store'])->name('posts.store');
     Route::delete('/user/deletepost/{id}', [PostController::class, 'destroy'])->name('user.deletepost');
+    Route::get('/user/editpost/{id}', [PostController::class, 'edit'])->name('posts.edit');
+    Route::put('/user/updatepost/{id}', [PostController::class, 'update'])->name('posts.update');
+    Route::delete('/posts/imagedelete/{id}', [PostController::class, 'imagedelete'])->name('posts.imagedelete');
 });
 
 // Post Routes
@@ -30,6 +33,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/manageposts', [AdminController::class, 'managePosts'])->name('admin.manageposts');
     Route::delete('/admin/posts/{id}', [AdminController::class, 'destroy'])->name('posts.destroy');
     Route::get('/admin/manageusers', [AdminController::class, 'manageUsers'])->name('admin.manageusers');
+
 });
 
 

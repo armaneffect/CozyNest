@@ -82,6 +82,7 @@ class PostController extends Controller
             $imagetable = new Image();
             $imagetable->image_path = $imagePath;
             $imagetable->post_id = $post->id;
+            $imagetable->user_id = Auth::id();
             $imagetable->save();
         }
 
@@ -107,6 +108,17 @@ class PostController extends Controller
         return view('user.home', compact('posts'));
     }
 
+
+    public function edit($id)
+    {
+        $post = Post::with('image')->findOrFail($id);
+        if ($post->user_id !== Auth::id()) {
+            return redirect()->route('user.dashboard')->with('error', 'You are not authorized to edit this post.');
+        }
+        return view('user.editpost', compact('post'));
+    }
+
+
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
@@ -118,18 +130,94 @@ class PostController extends Controller
         $image = Image::where('post_id', $id)->first();
 
         if ($image) {
-        
+
             if (Storage::disk('public')->exists($image->image_path)) {
                 Storage::disk('public')->delete($image->image_path);
             }
-        
+
             $image->delete();
         }
 
 
         $post->delete();
 
-        return redirect()->route('dashboard')->with('success', 'Post deleted successfully.');
+        return redirect()->back();
     }
 
+    public function imagedelete($id)
+    {
+        $image = Image::findOrFail($id);
+        if ($image->user_id !== Auth::id()) {
+            return redirect()->route('user.dashboard')->with('error', 'You are not authorized to delete this image.');
+        }
+
+        if (Storage::disk('public')->exists($image->image_path)) {
+            Storage::disk('public')->delete($image->image_path);
+        }
+
+        $image->delete();
+
+        return redirect()->back()->with('success', 'Image deleted successfully.');
+    }
+
+    public function update(Request $request, $id)
+    {
+
+        $post = Post::findOrFail($id);
+
+        if ($post->user_id !== Auth::id()) {
+            return redirect()->route('user.dashboard')->with('error', 'You are not authorized to update this post.');
+        }
+
+
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:100',
+            'name' => 'required|string|max:100',
+            'location' => 'required|string|max:100',
+            'roomType' => 'required|string|max:100',
+            'rentAmount' => 'required|integer',
+            'availability' => 'required|string|max:100',
+            'contactInfo' => 'required|string|size:11',
+            'email' => 'required|email|max:100',
+            'details' => 'required|string',
+            'preferences' => 'required|string|max:100',
+            'image' => 'nullable|image|max:2048',
+        ]);
+
+
+        $image = Image::where('post_id', $request->id)->first();
+
+        if (!$image) {
+            $request->validate([
+                'image' => 'required|image|max:2048',
+            ]);
+        }
+
+        $post->title = $validated['title'];
+        $post->name = $validated['name'];
+        $post->location = $validated['location'];
+        $post->roomType = $validated['roomType'];
+        $post->rentAmount = $validated['rentAmount'];
+        $post->availability = $validated['availability'];
+        $post->contactInfo = $validated['contactInfo'];
+        $post->email = $validated['email'];
+        $post->details = $validated['details'];
+        $post->preferences = $validated['preferences'];
+        $post->user_id = Auth::id();
+        $post->save();
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imagePath = $image->store('images', 'public');
+            $imagetable = new Image();
+            $imagetable->image_path = $imagePath;
+            $imagetable->post_id = $post->id;
+            $imagetable->user_id = Auth::id();
+            $imagetable->save();
+        }
+
+
+        return redirect()->back()->with('success', 'Post updated successfully.');
+    }
 }

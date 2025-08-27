@@ -18,7 +18,7 @@
             @forelse ($posts as $post)
                 <tr class="hover:bg-gray-50 transition duration-200">
                     <td class="px-6 py-4 border-b border-gray-200 font-medium text-gray-800">
-                        <img src="{{ asset('storage/'.$post->image->image_path) }}" alt="{{ $post->title }}" class="w-16 h-16 object-cover rounded">
+                        <img src="{{ asset('storage/'.$post->image?->image_path) }}" alt="{{ $post->title }}" class="w-16 h-16 object-cover rounded">
                     </td>
                     <td class="px-6 py-4 border-b border-gray-200 font-medium text-gray-800">
                         {{ $post->title }}
@@ -31,7 +31,7 @@
                            class="inline-block bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-1 px-3 rounded-md shadow">
                             View
                         </a>
-                        <a href=""
+                        <a href="{{ route('posts.edit', $post->id) }}"
                            class="inline-block bg-green-500 hover:bg-green-600 text-white text-sm font-semibold py-1 px-3 rounded-md shadow">
                             Edit
                         </a>
