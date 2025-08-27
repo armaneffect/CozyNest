@@ -8,15 +8,16 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+// public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/browseposts', [PostController::class, 'index'])->name('browseposts');
 
 // User Routes
 Route::middleware(['auth', 'user'])->group(function () {
     Route::get('/user/createpost', [PostController::class, 'create'])->name('posts.create');
-    Route::get('/user/dashboard', [PostController::class, 'dashboard'])->name('user.dashboard');
+    Route::get('/user/dashboard', [PostController::class, 'userDashboardHome'])->name('user.dashboard');
     Route::post('/user/storepost', [PostController::class, 'store'])->name('posts.store');
-    Route::get('/user/manageposts', [PostController::class, 'managePosts'])->name('user.manageposts');
+    Route::delete('/user/deletepost/{id}', [PostController::class, 'destroy'])->name('user.deletepost');
 });
 
 // Post Routes
@@ -25,7 +26,6 @@ Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show')->
 
 // Admin Routes
 Route::middleware(['auth', 'admin'])->group(function () {
-
     Route::get('/admin/dashboard', [AdminController::class, 'adminDashboard'])->name('admin.dashboard');
     Route::get('/admin/manageposts', [AdminController::class, 'managePosts'])->name('admin.manageposts');
     Route::delete('/admin/posts/{id}', [AdminController::class, 'destroy'])->name('posts.destroy');
