@@ -77,7 +77,8 @@
                             class="mt-1 block w-full sm:w-1/2 rounded-md border border-slate-300 bg-white px-3 py-4 shadow-sm placeholder:font-semibold text-black focus:border-black focus:outline-none focus:ring-1 focus:ring-black sm:text-sm">
                             <option value="" disabled selected>Select Room Type</option>
                             @foreach ($roomTypes as $type)
-                                <option selected={{ old('roomType') == $type }} value="{{ $type }}">{{ $type }}</option>
+                                <option selected={{ old('roomType') == $type }} value="{{ $type }}">
+                                    {{ $type }}</option>
                             @endforeach
 
                         </select>
@@ -89,9 +90,9 @@
                             class="mt-1 block w-full sm:w-1/2 rounded-md border border-slate-300 bg-white px-3 py-4 shadow-sm placeholder:font-semibold text-black focus:border-black focus:outline-none focus:ring-1 focus:ring-black sm:text-sm"
                             placeholder="Preferences" />
 
-                        <input type="text" name="contactInfo" value="{{ old('contactInfo') }}"
+                        <input type="number" name="contactInfo" value="{{ old('contactInfo') }}"
                             class="mt-1 block w-full sm:w-1/2 rounded-md border border-slate-300 bg-white px-3 py-4 shadow-sm placeholder:font-semibold text-black focus:border-black focus:outline-none focus:ring-1 focus:ring-black sm:text-sm"
-                            placeholder="Contact" />
+                            placeholder="Enter Phone Number" />
                     </div>
 
                     {{-- Availability and Photo --}}

@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
+    //browse posts
     public function index(Request $request)
     {
-
 
         $posts = Post::with('image')->when($request->input("category"), function ($query, $category) {
             return $query->where('roomType', $category);
@@ -20,18 +20,27 @@ class PostController extends Controller
             return $query->orderBy('rentAmount', $sort);
         })->when($request->input('search'), function ($query, $search) {
             return $query->where('title', 'like', '%' . $search . '%');
-        })
-        ->paginate(10);
+        })->latest()
+            ->paginate(10);
 
-       //return response()->json($posts);
+        //return response()->json($posts);
         return view('browseposts', compact('posts'));
     }
 
+    
+
+    public function show($id)
+    {
+        $post = Post::with('image')->findOrFail($id);
+        // return response()->json($post);
+        return view('post', compact('post'));
+    }
 
     public function create()
     {
         return view('user.createpost');
     }
+
 
     public function store(Request $request)
     {
@@ -42,7 +51,7 @@ class PostController extends Controller
             'roomType' => 'required|string|max:100',
             'rentAmount' => 'required|integer',
             'availability' => 'required|string|max:100',
-            'contactInfo' => 'required|string|max:100',
+            'contactInfo' => 'required|string|size:11',
             'email' => 'required|email|max:100',
             'details' => 'required|string',
             'preferences' => 'required|string|max:100',
@@ -80,27 +89,14 @@ class PostController extends Controller
     }
 
 
-
-
     public function dashboard()
 
     {
         return view('user.dashboard');
     }
-   public function adminDashboard()
-{
-    $posts = Post::all();
+  
 
-    $postCount = $posts->count();
-    $userCount = User::count();
-
-    // return response()->json([
-    //     'posts' => $posts,
-    //     'postCount' => $postCount,
-    //     'userCount' => $userCount
-    // ]);
-
-    return view('admin.deshhome', compact('posts', 'postCount', 'userCount'));
-}
+ 
+  
 
 }

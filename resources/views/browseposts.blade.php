@@ -96,7 +96,7 @@
 
                         {{-- Action Button --}}
                         <div class="pt-2 flex mt-auto">
-                            <a href="#"
+                            <a href="{{ route('posts.show', $post->id) }}"
                                 class="relative inline-flex items-center justify-center px-2 py-1 overflow-hidden font-medium text-indigo-600 transition duration-300 ease-out border-2 border-rose-500 rounded-xl shadow-sm group/button text-sm mx-auto">
 
                                 <span
